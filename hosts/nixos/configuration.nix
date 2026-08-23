@@ -395,7 +395,7 @@ in
     # приложения
     file-roller
     mpv imv loupe papers
-    libreoffice-fresh
+    libreoffice-stable
     telegram-desktop
     anki
     discord
