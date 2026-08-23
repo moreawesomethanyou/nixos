@@ -400,6 +400,7 @@ in
     anki
     discord
     spotify
+    jetbrains.webstorm
 
     # темы и утилиты
     adwaita-icon-theme papirus-icon-theme bibata-cursors gnome-themes-extra
