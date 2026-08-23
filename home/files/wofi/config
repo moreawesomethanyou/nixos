@@ -1,0 +1,6 @@
+allow_images=true
+image_size=28
+width=560
+height=420
+prompt=Поиск
+insensitive=true

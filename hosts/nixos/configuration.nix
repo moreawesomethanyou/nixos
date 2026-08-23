@@ -1,7 +1,8 @@
 # NixOS configuration — Huawei MateBook (Alder Lake) + Hyprland
-# Правь этот файл, затем: sudo nixos-rebuild switch
+# Системная часть. Правь, затем: sudo nixos-rebuild switch --flake ~/nixos-config#nixos
+# (или просто `rebuild` — функция fish). Пользовательская часть: ../../home/roman.nix
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 # Предел заряда батареи. Литий-ионные батареи заметно дольше живут, если не
 # держать их постоянно заряженными под завязку — это ровно то, что делала
@@ -144,6 +145,17 @@ in
   ## Nix: флейки, авто-сборка мусора, оптимизация стора
   #############################################################
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Каналов больше нет — система собирается из flake.lock. Эти две строки
+  # подсовывают тот же самый запиненный nixpkgs всему остальному, чтобы
+  # `nix-shell -p foo`, `nix run nixpkgs#foo` и `nix repl '<nixpkgs>'`
+  # брали ровно те же пакеты, что и система, а не что-то со стороны.
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+
+  # Подсказка «команды нет, установи пакет X» требует канала и без него
+  # работать не может. Выключено явно, чтобы не собирать её базу впустую.
+  programs.command-not-found.enable = false;
   nix.optimise.automatic = true;
   nix.gc = {
     automatic = true;

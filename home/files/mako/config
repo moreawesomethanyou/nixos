@@ -1,0 +1,17 @@
+font=Inter 10
+background-color=#1a1b26f0
+text-color=#c0caf5
+border-color=#7aa2f7
+border-size=2
+border-radius=10
+padding=12
+margin=8
+default-timeout=6000
+anchor=top-right
+max-visible=5
+icon-path=/run/current-system/sw/share/icons/Papirus-Dark
+width=380
+
+[urgency=critical]
+border-color=#f7768e
+default-timeout=0

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Режимы питания через power-profiles-daemon.
+#   power-mode next          — следующий по кругу (SUPER+ALT+P и клик по панели)
+#   power-mode performance   — конкретный режим
+#   power-mode menu          — меню wofi (правый клик по панели)
+#   power-mode current       — напечатать текущий
+set -euo pipefail
+
+profiles=(performance balanced power-saver)
+
+human() {
+    case "$1" in
+        performance) echo "Производительность" ;;
+        balanced)    echo "Сбалансированный" ;;
+        power-saver) echo "Экономия энергии" ;;
+        *)           echo "$1" ;;
+    esac
+}
+
+icon() {
+    case "$1" in
+        performance) echo "󰓅" ;;
+        balanced)    echo "󰾅" ;;
+        power-saver) echo "󰾆" ;;
+        *)           echo "󰈐" ;;
+    esac
+}
+
+current() { powerprofilesctl get; }
+
+apply() {
+    powerprofilesctl set "$1"
+    notify-send -a power-mode -i battery -t 1800 \
+        "$(icon "$1")  Питание: $(human "$1")" \
+        "$(case "$1" in
+             performance) echo "Максимум частоты, батарея садится быстрее" ;;
+             balanced)    echo "Обычный режим" ;;
+             power-saver) echo "Частота ниже, батарея живёт дольше" ;;
+           esac)"
+}
+
+case "${1:-next}" in
+    current) current ;;
+    next)
+        cur=$(current)
+        for i in "${!profiles[@]}"; do
+            if [ "${profiles[$i]}" = "$cur" ]; then
+                apply "${profiles[$(( (i + 1) % ${#profiles[@]} ))]}"
+                exit 0
+            fi
+        done
+        apply balanced          # текущий режим не из списка — вернуться к норме
+        ;;
+    menu)
+        cur=$(current)
+        choice=$(for p in "${profiles[@]}"; do
+                     mark=" "; [ "$p" = "$cur" ] && mark="●"
+                     echo "$mark $(icon "$p")  $(human "$p")"
+                 done | wofi --dmenu --prompt "Режим питания" --lines 4 --width 340)
+        [ -z "${choice:-}" ] && exit 0
+        case "$choice" in
+            *Производ*) apply performance ;;
+            *Сбаланс*)  apply balanced ;;
+            *Эконом*)   apply power-saver ;;
+        esac
+        ;;
+    performance|balanced|power-saver) apply "$1" ;;
+    *) echo "Неизвестный режим: $1" >&2; exit 1 ;;
+esac

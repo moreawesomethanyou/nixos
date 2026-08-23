@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Индикатор языка для waybar: EN / RU / JA.
+#
+# Работает без периодического опроса — печатает строку только тогда, когда
+# что-то действительно поменялось. Событий два:
+#   1. смена xkb-раскладки (Alt+Shift) — её присылает сокет событий Hyprland;
+#   2. включение/выключение mozc (Ctrl+Space) — о нём сообщает lang-poke
+#      через FIFO, потому что fcitx5 не шлёт по D-Bus сигнала о смене метода
+#      ввода (в его интерфейсе есть только InputMethodGroupsChanged).
+set -u
+
+fifo="${XDG_RUNTIME_DIR:-/tmp}/lang-indicator.fifo"
+sock="${XDG_RUNTIME_DIR:-/tmp}/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-none}/.socket2.sock"
+last=""
+
+emit() {
+    local im layout text class tip line
+    im=$(fcitx5-remote -n 2>/dev/null || true)
+
+    if [ "$im" = "mozc" ]; then
+        text="JA"
+        class="ja"
+        tip="Японский (mozc): ромадзи → кана. Ctrl+Space — обратно на латиницу"
+    else
+        layout=$(hyprctl -j devices 2>/dev/null \
+                 | jq -r '.keyboards[] | select(.main) | .active_keymap' | head -1)
+        case "$layout" in
+            English*) text="EN" ;;
+            Russian*) text="RU" ;;
+            "")       text="??" ;;
+            # Незнакомая раскладка: первые две буквы названия
+            *)        text=$(printf '%.2s' "$layout" | tr '[:lower:]' '[:upper:]') ;;
+        esac
+        class="latin"
+        tip="${layout:-раскладка неизвестна}\rAlt+Shift — en/ru, Ctrl+Space — японский"
+    fi
+
+    line=$(printf '{"text":"%s","class":"%s","tooltip":"%s"}' "$text" "$class" "$tip")
+    # Hyprland шлёт activelayout на каждое устройство ввода — не перерисовываем
+    # панель по нескольку раз на одно нажатие Alt+Shift.
+    [ "$line" = "$last" ] && return
+    last="$line"
+    printf '%s\n' "$line"
+}
+
+rm -f "$fifo"
+mkfifo "$fifo"
+# Открываем FIFO на чтение И запись: так у неё всегда есть писатель,
+# и цикл ниже не получает EOF каждый раз, когда lang-poke отпишется.
+exec 3<>"$fifo"
+
+emit
+socat -u "UNIX-CONNECT:$sock" - 2>/dev/null \
+    | grep --line-buffered '^activelayout>>' >&3 &
+
+while read -r _ <&3; do
+    emit
+done

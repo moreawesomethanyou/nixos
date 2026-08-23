@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Меню управления внешним монитором (SUPER + SHIFT + E).
+set -u
+
+LAPTOP="eDP-1"
+# Имена всех выходов, включая выключенные
+EXT=$(hyprctl monitors all | grep '^Monitor' | awk '{print $2}' | grep -v "^${LAPTOP}$" | head -1)
+
+notify() { command -v notify-send >/dev/null && notify-send "Мониторы" "$1"; }
+
+enable_laptop() {
+  hyprctl eval 'hl.monitor({output="'"$LAPTOP"'", mode="1920x1200@60", position="auto", scale=1, disabled=false})'
+}
+
+if [ -z "$EXT" ]; then
+  notify "Внешний монитор не подключён"
+  exit 0
+fi
+
+CHOICE=$(printf '%s\n' \
+  "Расширить — внешний справа" \
+  "Расширить — внешний слева" \
+  "Дублировать экраны" \
+  "Только внешний монитор" \
+  "Только экран ноутбука" \
+  "Настроить вручную (wdisplays)" \
+  | wofi --dmenu --prompt "Внешний монитор: $EXT" --width 460 --height 260)
+
+case "$CHOICE" in
+  "Расширить — внешний справа")
+    enable_laptop
+    hyprctl eval 'hl.monitor({output="'"$EXT"'", mode="preferred", position="auto-right", scale="auto", disabled=false})'
+    notify "$EXT справа от ноутбука"
+    ;;
+  "Расширить — внешний слева")
+    enable_laptop
+    hyprctl eval 'hl.monitor({output="'"$EXT"'", mode="preferred", position="auto-left", scale="auto", disabled=false})'
+    notify "$EXT слева от ноутбука"
+    ;;
+  "Дублировать экраны")
+    enable_laptop
+    hyprctl eval 'hl.monitor({output="'"$EXT"'", mode="preferred", position="auto", scale="auto", mirror="'"$LAPTOP"'", disabled=false})'
+    notify "Изображение продублировано на $EXT"
+    ;;
+  "Только внешний монитор")
+    hyprctl eval 'hl.monitor({output="'"$EXT"'", mode="preferred", position="auto", scale="auto", disabled=false})'
+    hyprctl eval 'hl.monitor({output="'"$LAPTOP"'", disabled=true})'
+    notify "Работает только $EXT"
+    ;;
+  "Только экран ноутбука")
+    enable_laptop
+    hyprctl eval 'hl.monitor({output="'"$EXT"'", disabled=true})'
+    notify "Работает только экран ноутбука"
+    ;;
+  "Настроить вручную (wdisplays)")
+    wdisplays &
+    ;;
+esac

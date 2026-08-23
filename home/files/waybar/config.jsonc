@@ -1,0 +1,125 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 28,
+  "spacing": 0,
+
+  "modules-left":   ["hyprland/workspaces", "hyprland/submap"],
+  "modules-center": ["hyprland/window"],
+  "modules-right":  ["tray", "idle_inhibitor", "custom/lang", "bluetooth", "network", "pulseaudio", "backlight", "cpu", "memory", "temperature", "power-profiles-daemon", "battery", "clock"],
+
+  "hyprland/workspaces": {
+    "format": "{id}",
+    "on-click": "activate",
+    "sort-by-number": true,
+    "persistent-workspaces": { "*": 5 }
+  },
+
+  "hyprland/window": {
+    "format": "{}",
+    "max-length": 60,
+    "separate-outputs": true
+  },
+
+  "tray": { "icon-size": 16, "spacing": 8 },
+
+  // Язык: EN / RU / JA. Скрипт печатает новую строку только по событию —
+  // смене раскладки в Hyprland или переключению mozc, без опроса по таймеру.
+  "custom/lang": {
+    "exec": "~/.local/bin/lang-indicator",
+    "return-type": "json",
+    "format": "{}",
+    "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next",
+    "on-click-right": "sh -c 'fcitx5-remote -t; ~/.local/bin/lang-poke'"
+  },
+
+  // Режим питания: клик — по кругу, правый клик — меню
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Питание: {profile}\nДрайвер: {driver}",
+    "format-icons": {
+      "default":     "󰈐",
+      "performance": "󰓅",
+      "balanced":    "󰾅",
+      "power-saver": "󰾆"
+    },
+    "on-click-right": "~/.local/bin/power-mode menu"
+  },
+
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": { "activated": "󰅶", "deactivated": "󰾪" },
+    "tooltip-format-activated": "Экран не гаснет",
+    "tooltip-format-deactivated": "Автогашение экрана включено"
+  },
+
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-connected": "󰂱  {num_connections}",
+    "tooltip-format": "{controller_alias}\n{status}",
+    "tooltip-format-connected": "{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias} {device_battery_percentage}%",
+    "on-click": "blueman-manager"
+  },
+
+  "network": {
+    "format-wifi": "󰤨   {signalStrength}%",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀",
+    "format-disconnected": "󰤭",
+    "tooltip-format-wifi": "{essid}\n{ipaddr}\n↓{bandwidthDownBits} ↑{bandwidthUpBits}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+    "tooltip-format-disconnected": "Нет сети",
+    "on-click": "nm-connection-editor"
+  },
+
+  "pulseaudio": {
+    "format": "{icon}  {volume}%",
+    "format-muted": "󰝟",
+    "format-bluetooth": "{icon}  {volume}%",
+    "format-icons": { "headphone": "󰋋", "headset": "󰋎", "default": ["󰕿", "󰖀", "󰕾"] },
+    "on-click": "pavucontrol",
+    "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+  },
+
+  "backlight": {
+    "format": "󰃞   {percent}%",
+    "on-scroll-up": "brightnessctl -e4 -n2 set 5%+",
+    "on-scroll-down": "brightnessctl -e4 -n2 set 5%-"
+  },
+
+  "cpu":    { "format": "󰻠  {usage}%", "interval": 3, "on-click": "kitty -e btop" },
+  "memory": { "format": "󰍛  {percentage}%", "interval": 5, "tooltip-format": "{used:0.1f}G / {total:0.1f}G" },
+
+"temperature": {
+  "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+  "input-filename": "temp1_input",
+  "critical-threshold": 85,
+  "interval": 2,
+  "format": "{temperatureC}°C ",
+  "format-critical": "{temperatureC}°C "
+},
+
+  "battery": {
+    "states": { "good": 80, "warning": 30, "critical": 15 },
+    "format": "{icon}  {capacity}%",
+    "format-charging": "󰂄  {capacity}%",
+    "format-plugged": "󰚥  {capacity}%",
+    "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
+    "tooltip-format": "{timeTo}\n{power}W",
+    "interval": 15
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%a, %d %B %Y}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "format": { "today": "<b><u>{}</u></b>" }
+    }
+  }
+}

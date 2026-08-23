@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Реакция на крышку ноутбука.
+# Закрыли при подключённом внешнем мониторе -> гасим встроенный экран.
+# Закрыли без внешнего -> ничего не делаем, сон включает logind.
+set -u
+
+EXTERNAL_COUNT=$(hyprctl monitors | grep '^Monitor' | grep -vc 'eDP-1')
+
+case "${1:-}" in
+  close)
+    if [ "$EXTERNAL_COUNT" -gt 0 ]; then
+      hyprctl eval 'hl.monitor({output="eDP-1", disabled=true})'
+    fi
+    ;;
+  open)
+    hyprctl eval 'hl.monitor({output="eDP-1", mode="1920x1200@60", position="auto", scale=1, disabled=false})'
+    ;;
+esac

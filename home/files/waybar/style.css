@@ -1,0 +1,129 @@
+/* Монолитная панель в духе GNOME: сплошная полоса, без островков и скруглений */
+
+* {
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+window#waybar {
+  background: #16161e;
+  color: #c0caf5;
+  border-bottom: 1px solid rgba(192, 202, 245, 0.07);
+}
+
+/* группы модулей не имеют своего фона — панель выглядит цельной */
+.modules-left,
+.modules-center,
+.modules-right {
+  background: transparent;
+}
+
+/* Рабочие столы: подчёркивание вместо «таблетки» */
+#workspaces {
+  margin-left: 2px;
+}
+#workspaces button {
+  padding: 0 9px;
+  color: #565f89;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+}
+#workspaces button.active {
+  color: #c0caf5;
+  border-bottom: 2px solid #7aa2f7;
+}
+#workspaces button.urgent {
+  color: #f7768e;
+  border-bottom: 2px solid #f7768e;
+}
+#workspaces button:hover {
+  color: #c0caf5;
+  background: rgba(192, 202, 245, 0.07);
+}
+
+#window {
+  color: #9aa5ce;
+  padding: 0 10px;
+}
+window#waybar.empty #window {
+  background: transparent;
+}
+
+#submap {
+  color: #e0af68;
+  padding: 0 8px;
+}
+
+/* Правая группа: одинаковые отступы, единый ритм */
+#tray,
+#idle_inhibitor,
+#bluetooth,
+#network,
+#pulseaudio,
+#backlight,
+#cpu,
+#memory,
+#temperature,
+#custom-lang,
+#power-profiles-daemon,
+#battery {
+  padding: 0 7px;
+  color: #a9b1d6;
+}
+
+#clock {
+  padding: 0 10px 0 7px;
+  color: #c0caf5;
+  font-weight: 600;
+}
+
+#tray {
+  padding: 0 6px;
+}
+#tray menu {
+  background: #1a1b26;
+  color: #c0caf5;
+}
+
+/* Состояния — цветом текста, без заливки, чтобы полоса оставалась ровной */
+#battery.charging            { color: #9ece6a; }
+#battery.warning:not(.charging)  { color: #e0af68; }
+#battery.critical:not(.charging) { color: #f7768e; }
+#temperature.critical        { color: #f7768e; }
+#network.disconnected        { color: #f7768e; }
+#pulseaudio.muted            { color: #565f89; }
+#idle_inhibitor.activated    { color: #9ece6a; }
+
+tooltip {
+  background: #1a1b26;
+  border: 1px solid rgba(192, 202, 245, 0.15);
+  border-radius: 6px;
+}
+tooltip label {
+  font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 12px;
+  color: #c0caf5;
+  padding: 4px;
+}
+
+/* Язык: моноширинный, чтобы EN/RU/JA не дёргали соседние модули по ширине */
+#custom-lang {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+#custom-lang.ja {
+  color: #bb9af7;   /* японский заметно выделен — режим ввода необычный */
+}
+
+#power-profiles-daemon.performance { color: #f7768e; }
+#power-profiles-daemon.power-saver { color: #9ece6a; }

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Толкает индикатор языка в панели после переключения mozc.
+# Привязан к Ctrl+Space неперехватывающим биндом: клавиша всё равно доходит
+# до fcitx5, а мы лишь просим панель перечитать состояние — с небольшой
+# задержкой, чтобы fcitx5 успел переключиться.
+fifo="${XDG_RUNTIME_DIR:-/tmp}/lang-indicator.fifo"
+poke() { [ -p "$fifo" ] && timeout 1 sh -c "echo poke > '$fifo'" 2>/dev/null; }
+sleep 0.15; poke
+sleep 0.35; poke   # подстраховка, если fcitx5 задумался
+exit 0

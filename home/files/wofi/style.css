@@ -1,0 +1,20 @@
+window {
+  background-color: rgba(26, 27, 38, 0.95);
+  border: 2px solid #7aa2f7;
+  border-radius: 12px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+}
+#input {
+  margin: 8px;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color: #24283b;
+  color: #c0caf5;
+}
+#inner-box { margin: 8px; }
+#entry { padding: 8px; border-radius: 8px; }
+#entry:selected { background-color: #7aa2f7; color: #1a1b26; }
+#text { color: #c0caf5; }
+#entry:selected #text { color: #1a1b26; font-weight: bold; }
