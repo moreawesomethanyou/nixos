@@ -371,7 +371,6 @@ in
     waybar             # панель
     wofi               # меню приложений
     mako libnotify     # уведомления
-    swaybg             # статичные обои (запасной вариант)
 
     # живые обои Wallpaper Engine: движок + GUI (GUI в nixpkgs нет, см. ./pkgs/)
     linux-wallpaperengine
