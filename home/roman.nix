@@ -140,7 +140,6 @@ in
       "x-scheme-handler/about"       = "google-chrome.desktop";
       "x-scheme-handler/unknown"     = "google-chrome.desktop";
       "x-scheme-handler/claude-cli"  = "claude-code-url-handler.desktop";
-      "text/markdown"                = "org.gnome.Papers.desktop";
       "x-scheme-handler/tg"          = "org.telegram.desktop.desktop";
       "x-scheme-handler/tonsite"     = "org.telegram.desktop.desktop";
       "image/jpeg" = "org.gnome.eog.desktop";
@@ -151,9 +150,15 @@ in
       "image/tiff" = "org.gnome.eog.desktop";
       "image/svg+xml" = "org.gnome.eog.desktop";
       "image/x-icon" = "org.gnome.eog.desktop";
+
+      "text/plain" = [ "org.gnome.gedit.desktop" ];
+      "text/markdown" = [ "org.gnome.gedit.desktop" ];
+      "text/x-log" = [ "org.gnome.gedit.desktop" ];
+      "application/x-shellscript" = [ "org.gnome.gedit.desktop" ];
+      "application/json" = [ "org.gnome.gedit.desktop" ];
+      "application/xml" = [ "org.gnome.gedit.desktop" ];
     };
     associations.added = {
-      "text/markdown"            = [ "vim.desktop" "org.gnome.Papers.desktop" ];
       "x-scheme-handler/tg"      = [ "org.telegram.desktop.desktop" ];
       "x-scheme-handler/tonsite" = [ "org.telegram.desktop.desktop" ];
       "image/jpeg" = [ "org.gnome.eog.desktop" ];
