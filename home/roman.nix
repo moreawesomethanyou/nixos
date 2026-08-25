@@ -152,5 +152,5 @@ in
 
   # Пакеты только для пользователя ставятся сюда; системные — в
   # environment.systemPackages в hosts/nixos/configuration.nix.
-  home.packages = [ ];
+  home.packages = [ eog ];
 }
