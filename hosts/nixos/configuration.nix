@@ -401,6 +401,8 @@ in
     discord
     spotify
     jetbrains.webstorm
+    eog
+    gedit
 
     # темы и утилиты
     adwaita-icon-theme papirus-icon-theme bibata-cursors gnome-themes-extra
