@@ -14,7 +14,7 @@
 #
 # НЕ управляется отсюда намеренно (у этих программ своё изменяемое состояние,
 # которое они переписывают сами): fcitx5, Chrome, Discord, Spotify, Steam, dconf.
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 let
   repo = "${config.home.homeDirectory}/nixos-config";
@@ -23,6 +23,10 @@ in
 {
   home.username = "roman";
   home.homeDirectory = "/home/roman";
+  
+  imports = [
+    inputs.zen-browser.homeModules.beta
+  ];
 
   # Не «версия Home Manager», а отметка о том, с какого релиза начата эта
   # конфигурация: по ней HM решает, применять ли к ней ломающие изменения
@@ -104,6 +108,13 @@ in
       hyprconf = "$EDITOR ${repo}/home/files/hypr/hyprland.lua";
       garbage  = "sudo nix-collect-garbage -d";
     };
+  };
+  #############################################################
+  ## Zen-browser
+  #############################################################
+  programs.zen-browser = {
+    enable = true;
+    setAsDefaultBrowser = false;
   };
 
   home.sessionVariables.EDITOR = "vim";

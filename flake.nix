@@ -19,6 +19,13 @@
       # иначе в системе окажутся две разные версии одних и тех же библиотек.
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+   };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }:
@@ -38,6 +45,7 @@
             home-manager.useGlobalPkgs = true;    # тот же pkgs, что у системы
             home-manager.useUserPackages = true;  # пакеты в /etc/profiles, а не в ~/.nix-profile
             home-manager.backupFileExtension = "hm-bak";
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.roman = import ./home/roman.nix;
           }
         ];
