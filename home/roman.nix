@@ -49,6 +49,7 @@ in
   xdg.configFile."wofi/style.css".source        = ./files/wofi/style.css;
   xdg.configFile."fastfetch/config.jsonc".source = ./files/fastfetch/config.jsonc;
   xdg.configFile."fastfetch/hypr_chan.png".source = ./files/fastfetch/hypr_chan.png;
+  xdg.configFile."cava/config".source             = ./files/cava/config;
 
   # Автозапуск GUI живых обоев. Под Hyprland этот каталог никто не читает
   # (обои запускает сам hyprland.lua), файл лежит для совместимости с DE,
@@ -152,5 +153,5 @@ in
 
   # Пакеты только для пользователя ставятся сюда; системные — в
   # environment.systemPackages в hosts/nixos/configuration.nix.
-  home.packages = [ eog ];
+  home.packages = [ pkgs.eog ];
 }
