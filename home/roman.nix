@@ -143,11 +143,22 @@ in
       "text/markdown"                = "org.gnome.Papers.desktop";
       "x-scheme-handler/tg"          = "org.telegram.desktop.desktop";
       "x-scheme-handler/tonsite"     = "org.telegram.desktop.desktop";
+      "image/jpeg" = "org.gnome.eog.desktop";
+      "image/png" = "org.gnome.eog.desktop";
+      "image/gif" = "org.gnome.eog.desktop";
+      "image/webp" = "org.gnome.eog.desktop";
+      "image/bmp" = "org.gnome.eog.desktop";
+      "image/tiff" = "org.gnome.eog.desktop";
+      "image/svg+xml" = "org.gnome.eog.desktop";
+      "image/x-icon" = "org.gnome.eog.desktop";
     };
     associations.added = {
       "text/markdown"            = [ "vim.desktop" "org.gnome.Papers.desktop" ];
       "x-scheme-handler/tg"      = [ "org.telegram.desktop.desktop" ];
       "x-scheme-handler/tonsite" = [ "org.telegram.desktop.desktop" ];
+      "image/jpeg" = [ "org.gnome.eog.desktop" ];
+      "image/png" = [ "org.gnome.eog.desktop" ];
+      "text/plain" = [ "org.gnome.gedit.desktop" ];
     };
   };
 
