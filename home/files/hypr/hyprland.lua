@@ -187,6 +187,7 @@ hl.bind(mod .. " + R",          hl.dsp.exec_cmd(menu))
 hl.bind(mod .. " + V",          hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
 hl.bind(mod .. " + L",          hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mod .. " + M",          hl.dsp.exec_cmd("wlogout"))
+hl.bind(mod .. " + Q",          hl.dsp.exec_cmd("sotavpn"))
 
 -- Управление окном
 hl.bind(mod .. " + Q",          hl.dsp.window.close())
