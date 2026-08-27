@@ -65,7 +65,7 @@
   },
 
   "network": {
-    "format-wifi": "󰤨   {signalStrength}%",
+    "format-wifi": "󰤨 ",
     "format-ethernet": "󰈀",
     "format-linked": "󰈀",
     "format-disconnected": "󰤭",
@@ -115,7 +115,6 @@
 
   "clock": {
     "format": "{:%H:%M %d %B (%a)}",
-    "format-alt": "{:%a, %d %B %Y}",
     "tooltip-format": "<tt>{calendar}</tt>",
     "calendar": {
       "mode": "month",
