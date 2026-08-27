@@ -14,24 +14,64 @@ local home        = os.getenv("HOME")
 local bin         = home .. "/.local/bin/"
 
 ------------------------------------------------------------
+-- КАКАЯ ЭТО МАШИНА
+------------------------------------------------------------
+-- Файл один на две машины: ноутбук Huawei MateBook и стационарный компьютер.
+-- Отличать их по имени хоста не стали — важно не имя, а наличие батареи:
+-- от неё зависит всё, что тут различается (встроенный экран, крышка,
+-- клавиши яркости, жесты тачпада).
+local function exists(path)
+    local f = io.open(path, "r")
+    if f then f:close(); return true end
+    return false
+end
+
+local laptop = exists("/sys/class/power_supply/BAT0/type")
+
+------------------------------------------------------------
 -- МОНИТОРЫ
 ------------------------------------------------------------
--- Встроенный экран ноутбука
-hl.monitor({
-    output   = "eDP-1",
-    mode     = "1920x1200@60",
-    position = "auto",
-    scale    = 1,
-})
+if laptop then
+    -- Встроенный экран ноутбука
+    hl.monitor({
+        output   = "eDP-1",
+        mode     = "1920x1200@60",
+        position = "auto",
+        scale    = 1,
+    })
 
--- Любой внешний монитор: своё родное разрешение, автоматически справа.
--- Переключение режимов (дублировать / только внешний / и т.д.) — SUPER + SHIFT + E
-hl.monitor({
-    output   = "",
-    mode     = "preferred",
-    position = "auto",
-    scale    = "auto",
-})
+    -- Любой внешний монитор: своё родное разрешение, автоматически справа.
+    -- Переключение режимов (дублировать / только внешний / и т.д.) — SUPER + SHIFT + E
+    hl.monitor({
+        output   = "",
+        mode     = "preferred",
+        position = "auto",
+        scale    = "auto",
+    })
+else
+    -- Стационарный. Правило «на всё подряд»: каждый подключённый монитор
+    -- берёт своё родное разрешение и встаёт правее предыдущего.
+    hl.monitor({
+        output   = "",
+        mode     = "preferred",
+        position = "auto",
+        scale    = "auto",
+    })
+
+    -- Так система заводится с любым монитором, но частоту "preferred" берёт
+    -- ту, которую монитор объявил основной, — у игровых это часто 60 Гц,
+    -- а не 144. Посмотреть, что получилось, и узнать имена выходов:
+    --     hyprctl monitors
+    -- Дальше либо mode = "highrr" (самая высокая частота), либо задать
+    -- каждый монитор точно — раскомментируй и подставь свои имена:
+    --
+    -- hl.monitor({ output = "DP-1",     mode = "2560x1440@144", position = "0x0",    scale = 1 })
+    -- hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60",  position = "2560x0", scale = 1 })
+    --
+    -- position — это координаты левого верхнего угла в общем «холсте»:
+    -- монитор шириной 2560 в позиции 0x0 занимает 0..2559, поэтому второй
+    -- начинается с 2560. Мышь ходит между ними именно по этой раскладке.
+end
 
 ------------------------------------------------------------
 -- АВТОЗАПУСК
@@ -169,8 +209,10 @@ hl.config({
 })
 
 -- Жесты тачпада: три пальца в сторону — смена рабочего стола
-hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
-hl.gesture({ fingers = 3, direction = "up", action = "fullscreen" })
+if laptop then
+    hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
+    hl.gesture({ fingers = 3, direction = "up", action = "fullscreen" })
+end
 
 ------------------------------------------------------------
 -- ГОРЯЧИЕ КЛАВИШИ
@@ -188,6 +230,7 @@ hl.bind(mod .. " + V",          hl.dsp.exec_cmd("cliphist list | wofi --dmenu | 
 hl.bind(mod .. " + L",          hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mod .. " + M",          hl.dsp.exec_cmd("wlogout"))
 hl.bind(mod .. " + Q",          hl.dsp.exec_cmd("sotavpn"))
+hl.bind(mod .. " + A",          hl.dsp.exec_cmd("anki"))
 
 -- Управление окном
 hl.bind(mod .. " + Q",          hl.dsp.window.close())
@@ -202,7 +245,15 @@ hl.bind(mod .. " + K",          hl.dsp.window.center())
 -- Служебное
 hl.bind(mod .. " + SHIFT + R",  hl.dsp.exec_cmd("hyprctl reload"))
 hl.bind(mod .. " + SHIFT + M",  hl.dsp.exit())
-hl.bind(mod .. " + SHIFT + E",  hl.dsp.exec_cmd(bin .. "hypr-display"))   -- внешний монитор
+-- Мониторы. На ноутбуке — своё меню (расширить / дублировать / только один),
+-- оно завязано на eDP-1. На десктопе таких режимов нет, поэтому просто
+-- wdisplays: он двигает мониторы мышью и применяет всё на лету.
+-- Чтобы раскладка пережила перезапуск — перенеси её в раздел «МОНИТОРЫ».
+if laptop then
+    hl.bind(mod .. " + SHIFT + E", hl.dsp.exec_cmd(bin .. "hypr-display"))
+else
+    hl.bind(mod .. " + SHIFT + E", hl.dsp.exec_cmd("wdisplays"))
+end
 
 -- Фокус и перемещение окон: стрелки
 -- (hjkl не используются: J, K и L заняты togglesplit, центрированием и блокировкой)
@@ -252,8 +303,12 @@ hl.bind(mod .. " + SHIFT + P", hl.dsp.exec_cmd("hyprshot -m region -o " .. home 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true })
+-- Яркость есть только у встроенного экрана: у монитора на столе её крутят
+-- кнопками на самом мониторе, brightnessctl до неё не дотянется.
+if laptop then
 hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
+end
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
@@ -273,8 +328,10 @@ hl.bind("CTRL + SPACE", hl.dsp.exec_cmd(bin .. "lang-poke"), { non_consuming = t
 
 -- Крышка ноутбука: если подключён внешний монитор — гасим встроенный экран,
 -- а не уходим в сон (сон при одном экране делает logind).
-hl.bind("switch:on:Lid Switch",  hl.dsp.exec_cmd(bin .. "hypr-lid close"), { locked = true })
-hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd(bin .. "hypr-lid open"),  { locked = true })
+if laptop then
+    hl.bind("switch:on:Lid Switch",  hl.dsp.exec_cmd(bin .. "hypr-lid close"), { locked = true })
+    hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd(bin .. "hypr-lid open"),  { locked = true })
+end
 
 ------------------------------------------------------------
 -- ПРАВИЛА ОКОН

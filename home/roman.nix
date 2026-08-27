@@ -1,4 +1,4 @@
-# Home Manager: всё, что живёт в /home/roman.
+# Home Manager: всё, что живёт в /home/roman. Один файл на обе машины.
 #
 # Два способа положить файл в ~/.config, они намеренно разные:
 #
@@ -14,11 +14,25 @@
 #
 # НЕ управляется отсюда намеренно (у этих программ своё изменяемое состояние,
 # которое они переписывают сами): fcitx5, Chrome, Discord, Spotify, Steam, dconf.
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, inputs, osConfig, ... }:
 
 let
   repo = "${config.home.homeDirectory}/nixos-config";
   live = path: config.lib.file.mkOutOfStoreSymlink "${repo}/${path}";
+
+  # Конфиг общий для двух машин, и почти всё на них одинаково. Различия,
+  # которые нельзя разрешить на месте, разведены по имени хоста:
+  #   nixos   — ноутбук Huawei MateBook
+  #   desktop — стационарный компьютер
+  # Отсюда берётся только панель: у неё JSON, а в нём нет «если». Hyprland
+  # разбирается сам — там Lua, и он смотрит, есть ли в системе батарея
+  # (см. home/files/hypr/hyprland.lua, раздел «КАКАЯ ЭТО МАШИНА»).
+  host = osConfig.networking.hostName;
+  isLaptop = host == "nixos";
+
+  waybarConfig = if isLaptop
+                 then "home/files/waybar/config.jsonc"
+                 else "home/files/waybar/config-desktop.jsonc";
 in
 {
   home.username = "roman";
@@ -40,7 +54,8 @@ in
   xdg.configFile."hypr/hypridle.conf".source = live "home/files/hypr/hypridle.conf";
   xdg.configFile."hypr/hyprlock.conf".source = live "home/files/hypr/hyprlock.conf";
 
-  xdg.configFile."waybar/config.jsonc".source = live "home/files/waybar/config.jsonc";
+  # Панель: у ноутбука в ней батарея и яркость, у десктопа их нет.
+  xdg.configFile."waybar/config.jsonc".source = live waybarConfig;
   xdg.configFile."waybar/style.css".source    = live "home/files/waybar/style.css";
 
   xdg.configFile."kitty/kitty.conf".source = live "home/files/kitty/kitty.conf";
@@ -96,14 +111,18 @@ in
       fastfetch
     '';
     functions = {
-      # Пересобрать систему из этого репозитория.
-      rebuild = "sudo nixos-rebuild switch --flake ${repo}#nixos";
+      # Пересобрать систему из этого репозитория. Без «#имя»: тогда
+      # nixos-rebuild берёт конфигурацию по имени хоста, и одна и та же
+      # команда работает и на ноутбуке, и на десктопе.
+      rebuild = "sudo nixos-rebuild switch --flake ${repo}";
       # Обновить пакеты (правит flake.lock) и пересобрать.
       update = ''
-        nix flake update --flake ${repo}; and sudo nixos-rebuild switch --flake ${repo}#nixos
+        nix flake update --flake ${repo}; and sudo nixos-rebuild switch --flake ${repo}
       '';
       # Правка конфигов — теперь без sudo, файлы свои.
-      nixconf  = "$EDITOR ${repo}/hosts/nixos/configuration.nix";
+      nixconf  = "$EDITOR ${repo}/hosts/${host}/configuration.nix";
+      # Общая для обеих машин часть системы.
+      commonconf = "$EDITOR ${repo}/hosts/common.nix";
       homeconf = "$EDITOR ${repo}/home/roman.nix";
       hyprconf = "$EDITOR ${repo}/home/files/hypr/hyprland.lua";
       garbage  = "sudo nix-collect-garbage -d";

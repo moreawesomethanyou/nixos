@@ -1,14 +1,23 @@
-# Флейк всей системы: NixOS + Home Manager для Huawei MateBook.
+# Флейк всей системы: NixOS + Home Manager. Отсюда собираются обе машины.
 #
-#   Пересобрать:      sudo nixos-rebuild switch --flake ~/nixos-config#nixos   (или: rebuild)
+#   nixos     ноутбук Huawei MateBook (Intel + встроенная графика)
+#   desktop   стационарный компьютер  (AMD + видеокарта AMD)
+#
+# Какая из них собирается, определяется именем хоста, менять команду при
+# переезде с машины на машину не нужно:
+#
+#   Пересобрать:      sudo nixos-rebuild switch --flake ~/nixos-config   (или: rebuild)
 #   Обновить пакеты:  nix flake update --flake ~/nixos-config, затем пересобрать (или: update)
 #   Откатиться:       sudo nixos-rebuild switch --rollback
+#
+# Собрать конфиг другой машины (например, проверить десктоп с ноутбука):
+#   nixos-rebuild build --flake ~/nixos-config#desktop
 #
 # nixpkgs запинен на коммит, из которого система была собрана в момент
 # перехода на флейки, — чтобы миграция ничего не поменяла. Дальше обновление
 # всегда осознанный шаг: nix flake update правит flake.lock, и это видно в git.
 {
-  description = "NixOS + Hyprland — Huawei MateBook";
+  description = "NixOS + Hyprland — ноутбук и стационарный компьютер";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/2c423e03bbafcff28bfadc6781a4a8257f205cb5";
@@ -29,14 +38,16 @@
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }:
-    {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+    let
+      # Общая обвязка хоста: система + Home Manager. Отличаются машины
+      # только своим каталогом в hosts/.
+      mkHost = host: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
 
         # чтобы модули могли ссылаться на сами inputs (см. nix.registry ниже)
         specialArgs = { inherit inputs; };
         modules = [
-          ./hosts/nixos/configuration.nix
+          ./hosts/${host}/configuration.nix
 
           # Home Manager подключён как модуль NixOS: одна команда
           # nixos-rebuild switch собирает и систему, и домашний каталог.
@@ -49,6 +60,12 @@
             home-manager.users.roman = import ./home/roman.nix;
           }
         ];
+      };
+    in
+    {
+      nixosConfigurations = {
+        nixos   = mkHost "nixos";
+        desktop = mkHost "desktop";
       };
     };
 }
