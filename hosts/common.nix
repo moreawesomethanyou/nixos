@@ -14,17 +14,6 @@
               ./commonmodules ];
 
   #############################################################
-  ## Загрузчик и ядро
-  #############################################################
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 15;   # не забивать /boot
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # Прошивки для WiFi/Bluetooth, а на AMD — ещё и для самой видеокарты
-  hardware.enableRedistributableFirmware = true;
-
-  #############################################################
   ## Сеть
   #############################################################
   networking.networkmanager.enable = true;
@@ -87,18 +76,6 @@
       };
     };
   };
-
-  #############################################################
-  ## Пользователь
-  #############################################################
-  users.users."roman" = {
-    isNormalUser = true;
-    description = "roman";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "input" "lp" "scanner" ];
-    packages = with pkgs; [];
-  };
-  security.sudo.wheelNeedsPassword = false;
-  nixpkgs.config.allowUnfree = true;
 
   #############################################################
   ## Fish-shell терминала
@@ -239,26 +216,6 @@
   };
 
   zramSwap.enable = true;           # сжатый swap в RAM
-
-  #############################################################
-  ## Шрифты
-  #############################################################
-  fonts = {
-    packages = with pkgs; [
-      inter
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-color-emoji
-      liberation_ttf
-      nerd-fonts.jetbrains-mono
-    ];
-    fontconfig.defaultFonts = {
-      serif = [ "Noto Serif" ];
-      sansSerif = [ "Inter" "Noto Sans" ];
-      monospace = [ "JetBrainsMono Nerd Font" ];
-      emoji = [ "Noto Color Emoji" ];
-    };
-  };
 
   #############################################################
   ## Пакеты

@@ -1,4 +1,6 @@
-{ config, pkgs, ... }:
+# здесь описано все, связанное со звуком
+
+{ ... }:
 
 {
   services.pulseaudio.enable = false;
