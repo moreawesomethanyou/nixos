@@ -79,10 +79,14 @@ window#waybar.empty #window {
   color: #a9b1d6;
 }
 
-#clock {
+#clock.date {
   padding: 0 10px 0 7px;
   color: #c0caf5;
+  font-size: 12px;
   font-weight: 600;
+}
+#clock {
+  font-size: 15px;
 }
 
 #tray {

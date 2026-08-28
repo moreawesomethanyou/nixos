@@ -4,9 +4,9 @@
   "height": 28,
   "spacing": 0,
 
-  "modules-left":   ["hyprland/workspaces", "hyprland/submap"],
-  "modules-center": ["hyprland/window"],
-  "modules-right":  ["tray", "idle_inhibitor", "custom/lang", "bluetooth", "network", "pulseaudio", "backlight", "cpu", "memory", "temperature", "power-profiles-daemon", "battery", "clock"],
+  "modules-left":   ["hyprland/workspaces", "hyprland/submap", "hyprland/window"],
+  "modules-center": ["clock"],
+  "modules-right":  ["tray", "idle_inhibitor", "custom/lang", "bluetooth", "pulseaudio", "backlight", "cpu", "memory", "temperature", "power-profiles-daemon", "battery", "clock#date"],
 
   "hyprland/workspaces": {
     "format": "{id}",
@@ -19,6 +19,10 @@
     "format": "{}",
     "max-length": 60,
     "separate-outputs": true
+  },
+
+  "clock": {
+    "format": "{:%H:%M}"
   },
 
   "tray": { "icon-size": 16, "spacing": 8 },
@@ -64,16 +68,16 @@
     "on-click": "blueman-manager"
   },
 
-  "network": {
-    "format-wifi": "󰤨 ",
-    "format-ethernet": "󰈀",
-    "format-linked": "󰈀",
-    "format-disconnected": "󰤭",
-    "tooltip-format-wifi": "{essid}\n{ipaddr}\n↓{bandwidthDownBits} ↑{bandwidthUpBits}",
-    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
-    "tooltip-format-disconnected": "Нет сети",
-    "on-click": "nm-connection-editor"
-  },
+//  "network": { добавь network в массив сверху если расскоментируешь
+//    "format-wifi": "󰤨 ",
+//    "format-ethernet": "󰈀",
+//    "format-linked": "󰈀",
+//    "format-disconnected": "󰤭",
+//    "tooltip-format-wifi": "{essid}\n{ipaddr}\n↓{bandwidthDownBits} ↑{bandwidthUpBits}",
+//    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+//    "tooltip-format-disconnected": "Нет сети",
+//    "on-click": "nm-connection-editor"
+//  },
 
   "pulseaudio": {
     "format": "{icon}  {volume}%",
@@ -113,8 +117,8 @@
     "interval": 15
   },
 
-  "clock": {
-    "format": "{:%H:%M %d %B (%a)}",
+  "clock#date": {
+    "format": "{:%d %B, %A}",
     "tooltip-format": "<tt>{calendar}</tt>",
     "calendar": {
       "mode": "month",
