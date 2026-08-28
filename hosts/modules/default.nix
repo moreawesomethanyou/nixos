@@ -7,5 +7,9 @@
     ./boot.nix
     ./fcitx5.nix
     ./pkgs.nix
+    ./locale.nix
+    ./network.nix
+    ./session.nix
+    ./services.nix
   ];
 }
