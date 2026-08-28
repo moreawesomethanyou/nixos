@@ -10,7 +10,8 @@
 { config, pkgs, lib, inputs, ... }:
 
 {
-  imports = [ ../sotavpn-nix/module.nix ];
+  imports = [ ../sotavpn-nix/module.nix
+              ./commonmodules ];
 
   #############################################################
   ## Загрузчик и ядро
@@ -180,20 +181,6 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;             # 32-битные игры в Steam
-  };
-
-  #############################################################
-  ## Звук: PipeWire
-  #############################################################
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-    wireplumber.enable = true;
   };
 
   #############################################################
