@@ -1,6 +1,5 @@
 {
   imports = [
-    ./sound.nix
     ./fonts.nix
     ./sound.nix
     ./user.nix
@@ -11,5 +10,10 @@
     ./network.nix
     ./session.nix
     ./services.nix
+    ./nixsettings.nix
+    ./mouse.nix
+    ./power.nix
+    ./shell.nix
+    ./bluetooth.nix
   ];
 }
