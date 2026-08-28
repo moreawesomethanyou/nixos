@@ -41,43 +41,6 @@
   console.keyMap = "us";
 
   #############################################################
-  ## Японский ввод: fcitx5 + mozc
-  #############################################################
-  # en/ru по-прежнему переключает сам Hyprland (Alt+Shift) — это не тронуто.
-  # Японский устроен иначе: иероглифы не лежат на клавишах, их набирают
-  # латиницей, а движок mozc превращает ромадзи в кану и предлагает кандзи.
-  # Поэтому отдельная xkb-раскладка "jp" не нужна — она описывает физическую
-  # японскую клавиатуру, а не сам ввод. Ctrl+Space включает и выключает mozc.
-  i18n.inputMethod = {
-    enable = true;
-    type = "fcitx5";
-    fcitx5 = {
-      waylandFrontend = true;                  # ввод через родной wayland-протокол
-      addons = with pkgs; [ fcitx5-mozc fcitx5-gtk ];
-      settings = {
-        # Это только стартовый набор: при первом же изменении fcitx5 заведёт
-        # свои файлы в ~/.config/fcitx5 и дальше читает уже их, а не эти.
-        inputMethod = {
-          "Groups/0" = {
-            Name = "Default";
-            "Default Layout" = "us";
-            DefaultIM = "keyboard-us";
-          };
-          "Groups/0/Items/0" = { Name = "keyboard-us"; Layout = ""; };
-          "Groups/0/Items/1" = { Name = "mozc";        Layout = ""; };
-          GroupOrder = { "0" = "Default"; };
-        };
-        globalOptions = {
-          Hotkey = { EnumerateWithTriggerKeys = "True"; };
-          "Hotkey/TriggerKeys" = { "0" = "Control+space"; };
-          "Hotkey/EnumerateForwardKeys" = { "0" = "Control+space"; };
-          Behavior = { ActiveByDefault = "False"; };
-        };
-      };
-    };
-  };
-
-  #############################################################
   ## Fish-shell терминала
   #############################################################
   programs.fish.enable = true;
@@ -216,75 +179,6 @@
   };
 
   zramSwap.enable = true;           # сжатый swap в RAM
-
-  #############################################################
-  ## Пакеты
-  #############################################################
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;      # для Steam Remote Play
-    dedicatedServer.openFirewall = true; # для хостинга dedicated-серверов
-    localNetworkGameTransfers.openFirewall = true; # для локальной передачи игр
-  };
-  programs.gamemode.enable = true;
-
-
-  environment.systemPackages = with pkgs; [
-    # база
-    vim wget curl git
-    fastfetch btop htop
-    unzip zip p7zip file tree ripgrep fd jq bat eza
-    cava
-
-    # браузер (остаётся Chrome) и терминал
-    google-chrome
-    kitty
-    claude-code
-
-    # оболочка Hyprland
-    waybar             # панель
-    wofi               # меню приложений
-    mako libnotify     # уведомления
-
-    # живые обои Wallpaper Engine: движок + GUI (GUI в nixpkgs нет, см. ./pkgs/)
-    linux-wallpaperengine
-    (callPackage ../pkgs/wallpaperengine-gui.nix { })
-
-    hyprlock hypridle  # блокировка/простой
-    hyprpolkitagent    # диалоги прав доступа
-    wlogout            # меню выключения
-
-    # скриншоты и буфер обмена
-    hyprshot grim slurp swappy
-    wl-clipboard cliphist
-
-    # железо: звук, яркость, сеть, мониторы
-    brightnessctl playerctl
-    pavucontrol pamixer pulseaudio
-    networkmanagerapplet
-    nwg-displays wdisplays
-    polychromatic
-
-    # приложения
-    file-roller
-    mpv imv loupe papers
-    libreoffice-stable
-    telegram-desktop
-    anki
-    discord
-    spotify
-    jetbrains.webstorm
-    eog
-    gedit
-
-    # темы и утилиты
-    adwaita-icon-theme papirus-icon-theme bibata-cursors gnome-themes-extra
-    xdg-utils xdg-user-dirs
-    glib               # gsettings
-    wev
-    socat              # индикатор языка слушает события Hyprland
-    lm_sensors
-  ];
 
   #############################################################
   system.stateVersion = "26.05"; # НЕ МЕНЯТЬ
