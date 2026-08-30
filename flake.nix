@@ -20,7 +20,7 @@
   description = "NixOS + Hyprland — ноутбук и стационарный компьютер";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/2c423e03bbafcff28bfadc6781a4a8257f205cb5";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
