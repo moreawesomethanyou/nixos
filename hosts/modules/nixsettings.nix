@@ -12,6 +12,7 @@
   # брали ровно те же пакеты, что и система, а не что-то со стороны.
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+  nix.settings.auto-optimise-store = true;
 
   # Подсказка «команды нет, установи пакет X» требует канала и без него
   # работать не может. Выключено явно, чтобы не собирать её базу впустую.
