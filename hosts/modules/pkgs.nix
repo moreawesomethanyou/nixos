@@ -18,7 +18,7 @@
     vim wget curl git
     fastfetch btop htop
     unzip zip p7zip file tree ripgrep fd jq bat eza
-    cava
+    cava nodejs
 
     # браузер (остаётся Chrome) и терминал
     google-chrome

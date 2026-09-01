@@ -26,6 +26,8 @@
       homeconf = "$EDITOR ${repo}/home/roman.nix";
       hyprconf = "$EDITOR ${repo}/home/files/hypr/hyprland.lua";
       garbage  = "sudo nix-collect-garbage -d";
+      homepkgs = "$EDITOR ${repo}/home/modules/pkgs.nix";
+      commonpkgs = "$EDITOR ${repo}/hosts/modules/pkgs.nix";
     };
   };
 }
