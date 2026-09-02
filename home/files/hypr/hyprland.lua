@@ -51,12 +51,12 @@ if laptop then
 else
     -- Стационарный. Правило «на всё подряд»: каждый подключённый монитор
     -- берёт своё родное разрешение и встаёт правее предыдущего.
-    hl.monitor({
-        output   = "",
-        mode     = "preferred",
-        position = "auto",
-        scale    = "auto",
-    })
+    -- hl.monitor({
+    --     output   = "",
+    --     mode     = "preferred",
+    --     position = "auto",
+    --     scale    = "auto",
+    -- })
 
     -- Так система заводится с любым монитором, но частоту "preferred" берёт
     -- ту, которую монитор объявил основной, — у игровых это часто 60 Гц,
@@ -65,7 +65,7 @@ else
     -- Дальше либо mode = "highrr" (самая высокая частота), либо задать
     -- каждый монитор точно — раскомментируй и подставь свои имена:
     --
-    -- hl.monitor({ output = "DP-1",     mode = "2560x1440@144", position = "0x0",    scale = 1 })
+    hl.monitor({ output = "DP-3",     mode = "2560x1440@144", position = "0x0",    scale = 1 })
     -- hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60",  position = "2560x0", scale = 1 })
     --
     -- position — это координаты левого верхнего угла в общем «холсте»:

@@ -15,7 +15,7 @@
 
   "modules-left":   ["hyprland/workspaces", "hyprland/submap", "hyprland/window"],
   "modules-center": ["clock"],
-  "modules-right":  ["tray", "idle_inhibitor", "custom/lang", "bluetooth", "network", "pulseaudio", "cpu", "memory", "temperature", "power-profiles-daemon", "clock#date"],
+  "modules-right":  ["tray", "idle_inhibitor", "custom/lang", "network", "pulseaudio", "cpu", "memory", "temperature", "power-profiles-daemon", "clock#date"],
 
   "hyprland/workspaces": {
     "format": "{id}",
@@ -71,17 +71,6 @@
     "tooltip-format-deactivated": "Автогашение экрана включено"
   },
 
-  "bluetooth": {
-    "format": "󰂯",
-    "format-disabled": "󰂲",
-    "format-off": "󰂲",
-    "format-connected": "󰂱  {num_connections}",
-    "tooltip-format": "{controller_alias}\n{status}",
-    "tooltip-format-connected": "{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias} {device_battery_percentage}%",
-    "on-click": "blueman-manager"
-  },
-
 //  "network": {
 //    "format-wifi": "󰤨 ",
 //    "format-ethernet": "󰈀",
@@ -116,12 +105,7 @@
   // температуру видеокарты или SSD — цифры правдоподобные, но не те.
   "temperature": {
     "hwmon-path": [
-      "/sys/class/hwmon/hwmon0/temp1_input",
-      "/sys/class/hwmon/hwmon1/temp1_input",
-      "/sys/class/hwmon/hwmon2/temp1_input",
-      "/sys/class/hwmon/hwmon3/temp1_input",
-      "/sys/class/hwmon/hwmon4/temp1_input",
-      "/sys/class/hwmon/hwmon5/temp1_input"
+      "/sys/class/hwmon/hwmon2/temp1_input"
     ],
     "critical-threshold": 90,
     "interval": 2,

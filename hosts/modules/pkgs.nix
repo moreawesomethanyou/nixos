@@ -21,7 +21,12 @@
     cava nodejs
 
     # браузер (остаётся Chrome) и терминал
-    google-chrome
+    (google-chrome.override {
+    commandLineArgs = [
+      "--enable-features=Vulkan"
+      "--enable-unsafe-webgpu"
+    ];
+  })
     kitty
     claude-code
 
@@ -55,9 +60,7 @@
     libreoffice-stable
     telegram-desktop
     anki
-    discord
     spotify
-    jetbrains.webstorm
     eog
     gedit
 
